@@ -1,61 +1,53 @@
 # Docker MySQL Lab
 
-Ce projet configure une instance MySQL dans un conteneur Docker avec une base de données préconfigurée.
-
-## Structure du projet
-
-```
-docker-mysql-lab/
-├── Dockerfile
-├── init.sql
-├── .env
-└── README.md
-```
-
-- `Dockerfile` : Configuration de l'image MySQL
-- `init.sql` : Script d'initialisation de la base de données
-- `.env` : Variables d'environnement (à ne pas commiter dans un vrai projet)
+Ce projet configure un environnement MySQL dans Docker pour le développement et les tests.
 
 ## Prérequis
 
-- Docker installé sur votre machine
+- Docker
 - Docker Compose (optionnel)
 
-## Installation et démarrage
+## Configuration
 
-1. Cloner le projet :
-```bash
-git clone [URL_DU_REPO]
-cd docker-mysql-lab
-```
+1. Copiez le fichier `.env.example` vers `.env` et ajustez les variables selon vos besoins :
+   ```
+   MYSQL_ROOT_PASSWORD=root
+   MYSQL_DATABASE=formation
+   ```
 
-2. Configurer les variables d'environnement :
-   - Copier le fichier `.env.example` vers `.env` (si applicable)
-   - Modifier les valeurs dans le fichier `.env`
+## Installation
 
-3. Construire l'image :
-```bash
-docker build -t mysql-lab .
-```
+1. Construisez l'image Docker :
+   ```bash
+   docker build -t mysql-lab .
+   ```
 
-4. Lancer le conteneur :
-```bash
-docker run -d -p 3306:3306 --env-file .env --name mysql-container mysql-lab
-```
+2. Lancez le conteneur :
+   ```bash
+   docker run -d --name mysql-container -p 3307:3306 --env-file .env mysql-lab
+   ```
 
-## Vérification
+## Connexion à la base de données
 
-1. Se connecter au conteneur :
-```bash
-docker exec -it mysql-container mysql -uroot -p
-```
+- Hôte : localhost
+- Port : 3307
+- Utilisateur : root
+- Mot de passe : root (ou celui défini dans .env)
+- Base de données : formation
 
-2. Vérifier la base de données :
-```sql
-USE formation;
-SHOW TABLES;
-DESCRIBE utilisateurs;
-```
+## Structure du projet
+
+- `Dockerfile` : Configuration de l'image Docker
+- `init.sql` : Script d'initialisation de la base de données
+- `.env` : Variables d'environnement (non versionné)
+- `.env.example` : Exemple de fichier de variables d'environnement
+
+## Commandes utiles
+
+- Démarrer le conteneur : `docker start mysql-container`
+- Arrêter le conteneur : `docker stop mysql-container`
+- Voir les logs : `docker logs mysql-container`
+- Se connecter au shell MySQL : `docker exec -it mysql-container mysql -uroot -p`
 
 ## Structure de la base de données
 
