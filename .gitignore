@@ -1,0 +1,19 @@
+# Docker volumes et données
+data/
+mysql_data/
+
+# Fichiers d'environnement
+.env
+
+# Logs
+*.log
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# IDEs et éditeurs
+.idea/
+.vscode/
+*.swp
+*.swo 
