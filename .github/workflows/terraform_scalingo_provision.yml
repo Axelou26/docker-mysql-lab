@@ -1,4 +1,4 @@
-name: Terraform Scalingo Provision
+name: Terraform Scalingo Provision and Deploy
 
 on:
   push:
@@ -8,6 +8,8 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    outputs:
+      app_name: ${{ steps.extract_app_name.outputs.app_name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -37,4 +39,24 @@ jobs:
           cd terraform
           terraform apply -auto-approve
         env:
-          TF_VAR_scalingo_token: ${{ secrets.SCALINGO_TOKEN }} 
+          TF_VAR_scalingo_token: ${{ secrets.SCALINGO_TOKEN }}
+          
+      - name: Extract app name
+        id: extract_app_name
+        run: |
+          cd terraform
+          APP_NAME=$(terraform output -raw app_name)
+          echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
+
+  deploy:
+    needs: terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Scalingo
+        uses: kolok/deploy-to-scalingo@v1
+        with:
+          scalingo_token: ${{ secrets.SCALINGO_TOKEN }}
+          app_name: ${{ needs.terraform.outputs.app_name }} 

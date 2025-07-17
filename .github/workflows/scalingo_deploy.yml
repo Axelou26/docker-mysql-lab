@@ -7,6 +7,7 @@ on:
 
 jobs:
   deploy:
+    needs: terraform
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -16,4 +17,4 @@ jobs:
         uses: kolok/deploy-to-scalingo@v1
         with:
           scalingo_token: ${{ secrets.SCALINGO_TOKEN }}
-          app_name: docker-mysql-lab 
+          app_name: ${{ needs.terraform.outputs.app_name }} 

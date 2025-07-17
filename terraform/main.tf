@@ -12,5 +12,7 @@ provider "scalingo" {
   region    = var.scalingo_region
 }
 
-# L'application docker-mysql-lab existe déjà sur Scalingo
-# et est gérée manuellement 
+# Création de l'application Scalingo via Terraform
+resource "scalingo_app" "app" {
+  name = var.app_name
+} 

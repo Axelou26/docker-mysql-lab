@@ -1,2 +1,4 @@
-# Les outputs sont supprimés car l'application est gérée manuellement
-# et n'est plus référencée dans la configuration Terraform 
+output "app_name" {
+  description = "Nom de l'application Scalingo déployée"
+  value       = scalingo_app.app.name
+} 
