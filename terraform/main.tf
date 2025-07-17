@@ -12,12 +12,17 @@ provider "scalingo" {
   region    = var.scalingo_region
 }
 
-resource "scalingo_app" "app" {
+data "scalingo_app" "app" {
   name = var.app_name
 }
 
+# Commenté car l'application existe déjà
+# resource "scalingo_app" "app" {
+#   name = var.app_name
+# }
+
 resource "scalingo_domain" "app_domain" {
-  app         = scalingo_app.app.id
+  app         = data.scalingo_app.app.id
   common_name = var.domain_name
   count       = var.domain_name != "" ? 1 : 0
 } 
