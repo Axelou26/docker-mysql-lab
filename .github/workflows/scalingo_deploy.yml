@@ -21,9 +21,13 @@ jobs:
         run: |
           curl -O https://cli-dl.scalingo.com/install && bash install
 
-      - name: Configure Scalingo
+      - name: Authenticate with Scalingo
         env:
-          SCALINGO_API_TOKEN: ${{ secrets.SCALINGO_TOKEN }}
+          SCALINGO_TOKEN: ${{ secrets.SCALINGO_TOKEN }}
+        run: |
+          echo "$SCALINGO_TOKEN" | scalingo login --ssh=false
+
+      - name: Configure Scalingo and detect app
         run: |
           echo "Listing available regions:"
           scalingo regions
@@ -31,12 +35,8 @@ jobs:
           scalingo config --region osc-fr1
           echo "Listing available applications:"
           scalingo apps
-          # Récupérer le nom de l'application depuis Terraform
-          cd terraform
-          terraform init -backend=false
-          APP_NAME=$(grep "name" main.tf | awk -F '"' '{print $2}' || echo "mon-application-terraform")
-          echo "Found app name: $APP_NAME"
-          echo "app_name=$APP_NAME" >> $GITHUB_ENV
+          # Définir un nom d'application par défaut
+          echo "app_name=mon-application-terraform" >> $GITHUB_ENV
       
       - name: Create application archive
         run: |
@@ -44,8 +44,6 @@ jobs:
           tar -czf ../app.tar.gz .
       
       - name: Deploy to Scalingo
-        env:
-          SCALINGO_API_TOKEN: ${{ secrets.SCALINGO_TOKEN }}
         run: |
           echo "Deploying to application: ${{ env.app_name }}"
           scalingo --app ${{ env.app_name }} --region osc-fr1 deploy app.tar.gz 
