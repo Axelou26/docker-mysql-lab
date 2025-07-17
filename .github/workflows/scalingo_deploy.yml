@@ -17,21 +17,35 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Set app name
+      - name: Install Scalingo CLI
         run: |
-          echo "app_name=mon-application-terraform" >> $GITHUB_ENV
+          curl -O https://cli-dl.scalingo.com/install && bash install
+
+      - name: Configure Scalingo
+        env:
+          SCALINGO_API_TOKEN: ${{ secrets.SCALINGO_TOKEN }}
+        run: |
+          echo "Listing available regions:"
+          scalingo regions
+          echo "Setting region to osc-fr1"
+          scalingo config --region osc-fr1
+          echo "Listing available applications:"
+          scalingo apps
+          # Récupérer le nom de l'application depuis Terraform
+          cd terraform
+          terraform init -backend=false
+          APP_NAME=$(grep "name" main.tf | awk -F '"' '{print $2}' || echo "mon-application-terraform")
+          echo "Found app name: $APP_NAME"
+          echo "app_name=$APP_NAME" >> $GITHUB_ENV
       
       - name: Create application archive
         run: |
           cd app
           tar -czf ../app.tar.gz .
       
-      - name: Install Scalingo CLI
-        run: |
-          curl -O https://cli-dl.scalingo.com/install && bash install
-
       - name: Deploy to Scalingo
         env:
           SCALINGO_API_TOKEN: ${{ secrets.SCALINGO_TOKEN }}
         run: |
-          scalingo --app ${{ env.app_name }} deploy app.tar.gz 
+          echo "Deploying to application: ${{ env.app_name }}"
+          scalingo --app ${{ env.app_name }} --region osc-fr1 deploy app.tar.gz 
