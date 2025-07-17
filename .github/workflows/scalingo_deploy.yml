@@ -17,6 +17,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+      
       - name: Get app name
         id: get_app_name
         run: |
