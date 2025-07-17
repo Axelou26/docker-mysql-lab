@@ -18,7 +18,6 @@ resource "scalingo_app" "app" {
 
 resource "scalingo_domain" "app_domain" {
   app         = scalingo_app.app.id
-  name        = var.domain_name
-  ssl         = var.enable_ssl
+  common_name = var.domain_name
   count       = var.domain_name != "" ? 1 : 0
 } 
