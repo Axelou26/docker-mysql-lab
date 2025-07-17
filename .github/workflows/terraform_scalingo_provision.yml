@@ -1,4 +1,4 @@
-name: Terraform Scalingo Provision and Deploy
+name: Terraform Scalingo Provision
 
 on:
   push:
@@ -8,8 +8,6 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    outputs:
-      app_name: ${{ steps.extract_app_name.outputs.app_name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,31 +37,5 @@ jobs:
           cd terraform
           terraform apply -auto-approve
         env:
-          TF_VAR_scalingo_token: ${{ secrets.SCALINGO_TOKEN }}
-          
-      - name: Extract app name
-        id: extract_app_name
-        run: |
-          cd terraform
-          APP_NAME=$(terraform output -raw app_name)
-          echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
-
-  deploy:
-    needs: terraform
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Create SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SCALINGO_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ssh.osc-fr1.scalingo.com >> ~/.ssh/known_hosts
-
-      - name: Deploy to Scalingo
-        uses: kolok/deploy-to-scalingo@v1
-        with:
-          app-name: ${{ needs.terraform.outputs.app_name }}
-          ssh-private-key: ${{ secrets.SCALINGO_SSH_KEY }} 
+          SCALINGO_TOKEN: ${{ secrets.SCALINGO_TOKEN }}
+          TF_VAR_scalingo_token: ${{ secrets.SCALINGO_TOKEN }} 
