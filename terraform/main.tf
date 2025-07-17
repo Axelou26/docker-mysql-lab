@@ -12,17 +12,14 @@ provider "scalingo" {
   region    = var.scalingo_region
 }
 
-data "scalingo_app" "app" {
+# Utiliser l'application existante au lieu d'en créer une nouvelle
+data "scalingo_app" "existing_app" {
   name = var.app_name
 }
 
-# Commenté car l'application existe déjà
-# resource "scalingo_app" "app" {
-#   name = var.app_name
-# }
-
+# La ressource domain utilise maintenant l'application existante
 resource "scalingo_domain" "app_domain" {
-  app         = data.scalingo_app.app.id
+  app         = data.scalingo_app.existing_app.id
   common_name = var.domain_name
   count       = var.domain_name != "" ? 1 : 0
 } 
