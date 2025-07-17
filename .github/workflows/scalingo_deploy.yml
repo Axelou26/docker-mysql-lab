@@ -20,4 +20,4 @@ jobs:
         uses: kolok/deploy-to-scalingo@v1
         with:
           scalingo_token: ${{ secrets.SCALINGO_TOKEN }}
-          app_name: ${{ vars.SCALINGO_APP_NAME }} # Nom de l'application Scalingo provisionnée par Terraform 
+          app_name: docker-mysql-lab 

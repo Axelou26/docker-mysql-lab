@@ -13,7 +13,7 @@ variable "scalingo_region" {
 variable "app_name" {
   description = "Name of the Scalingo application"
   type        = string
-  default     = "mon-application-terraform"
+  default     = "docker-mysql-lab"
 }
 
 variable "domain_name" {
