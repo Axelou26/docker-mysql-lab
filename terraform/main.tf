@@ -14,7 +14,6 @@ provider "scalingo" {
 
 resource "scalingo_app" "app" {
   name = var.app_name
-  stack = "scalingo-22"
 }
 
 resource "scalingo_domain" "app_domain" {
