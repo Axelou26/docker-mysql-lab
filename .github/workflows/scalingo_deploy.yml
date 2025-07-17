@@ -21,6 +21,11 @@ jobs:
         run: |
           echo "app_name=mon-application-terraform" >> $GITHUB_ENV
       
+      - name: Create application archive
+        run: |
+          cd app
+          tar -czf ../app.tar.gz .
+      
       - name: Install Scalingo CLI
         run: |
           curl -O https://cli-dl.scalingo.com/install && bash install
@@ -29,4 +34,4 @@ jobs:
         env:
           SCALINGO_API_TOKEN: ${{ secrets.SCALINGO_TOKEN }}
         run: |
-          scalingo --app ${{ env.app_name }} deploy --source ./app 
+          scalingo --app ${{ env.app_name }} deploy app.tar.gz 
