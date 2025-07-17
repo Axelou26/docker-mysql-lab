@@ -1,0 +1,25 @@
+terraform {
+  required_providers {
+    scalingo = {
+      source = "Scalingo/scalingo"
+      version = "~> 2.0.0"
+    }
+  }
+}
+
+provider "scalingo" {
+  api_token = var.scalingo_token
+  region    = var.scalingo_region
+}
+
+resource "scalingo_app" "app" {
+  name = var.app_name
+  stack = "scalingo-22"
+}
+
+resource "scalingo_domain" "app_domain" {
+  app         = scalingo_app.app.id
+  name        = var.domain_name
+  ssl         = var.enable_ssl
+  count       = var.domain_name != "" ? 1 : 0
+} 

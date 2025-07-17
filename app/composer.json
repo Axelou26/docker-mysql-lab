@@ -1,0 +1,7 @@
+{
+  "name": "mon-application-scalingo",
+  "description": "Application déployée sur Scalingo avec Terraform et GitHub Actions",
+  "require": {
+    "php": "^8.0"
+  }
+} 

@@ -1,0 +1,23 @@
+name: Deploy to Scalingo
+
+on:
+  workflow_run:
+    workflows: ["Terraform Scalingo Provision"]
+    types:
+      - completed
+    branches:
+      - prod
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Scalingo
+        uses: kolok/deploy-to-scalingo@v1
+        with:
+          scalingo_token: ${{ secrets.SCALINGO_TOKEN }}
+          app_name: ${{ vars.SCALINGO_APP_NAME }} # Nom de l'application Scalingo provisionnée par Terraform 

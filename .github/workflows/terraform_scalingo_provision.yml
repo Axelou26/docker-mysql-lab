@@ -1,0 +1,40 @@
+name: Terraform Scalingo Provision
+
+on:
+  push:
+    branches:
+      - prod
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        # with:
+        #   terraform_version: ">= 1.0.0" # Optionnel
+
+      - name: Initialize Terraform
+        run: |
+          cd terraform
+          terraform init
+        env:
+          TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }} # Optionnel
+          TF_CLOUD_WORKSPACE: ${{ secrets.TF_CLOUD_WORKSPACE }} # Optionnel
+
+      - name: Plan Terraform
+        run: |
+          cd terraform
+          terraform plan
+        env:
+          TF_VAR_scalingo_token: ${{ secrets.SCALINGO_TOKEN }}
+
+      - name: Apply Terraform
+        run: |
+          cd terraform
+          terraform apply -auto-approve
+        env:
+          TF_VAR_scalingo_token: ${{ secrets.SCALINGO_TOKEN }} 
