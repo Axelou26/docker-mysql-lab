@@ -17,16 +17,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-      
-      - name: Get app name
-        id: get_app_name
+      - name: Set app name
         run: |
-          cd terraform
-          terraform init -backend=false
-          APP_NAME=$(terraform output -raw app_name || echo "mon-application-terraform")
-          echo "app_name=$APP_NAME" >> $GITHUB_ENV
+          echo "app_name=mon-application-terraform" >> $GITHUB_ENV
       
       - name: Create SSH key
         run: |
