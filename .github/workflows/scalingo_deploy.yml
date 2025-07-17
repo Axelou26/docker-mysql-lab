@@ -27,23 +27,7 @@ jobs:
         run: |
           echo "$SCALINGO_TOKEN" | scalingo login --ssh=false
 
-      - name: Configure Scalingo and detect app
-        run: |
-          echo "Listing available regions:"
-          scalingo regions
-          echo "Setting region to osc-fr1"
-          scalingo config --region osc-fr1
-          echo "Listing available applications:"
-          scalingo apps
-          # Définir un nom d'application par défaut
-          echo "app_name=mon-application-terraform" >> $GITHUB_ENV
-      
-      - name: Create application archive
-        run: |
-          cd app
-          tar -czf ../app.tar.gz .
-      
       - name: Deploy to Scalingo
         run: |
-          echo "Deploying to application: ${{ env.app_name }}"
-          scalingo --app ${{ env.app_name }} --region osc-fr1 deploy app.tar.gz 
+          cd app
+          scalingo --app mon-application-terraform --region osc-fr1 deploy 
