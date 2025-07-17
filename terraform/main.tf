@@ -12,14 +12,5 @@ provider "scalingo" {
   region    = var.scalingo_region
 }
 
-# Utiliser l'application existante au lieu d'en créer une nouvelle
-data "scalingo_app" "existing_app" {
-  name = var.app_name
-}
-
-# La ressource domain utilise maintenant l'application existante
-resource "scalingo_domain" "app_domain" {
-  app         = data.scalingo_app.existing_app.id
-  common_name = var.domain_name
-  count       = var.domain_name != "" ? 1 : 0
-} 
+# L'application docker-mysql-lab existe déjà sur Scalingo
+# et est gérée manuellement 
